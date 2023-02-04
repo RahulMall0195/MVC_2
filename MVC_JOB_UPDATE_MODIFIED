@@ -1,0 +1,1424 @@
+__________________________________________________________JobUpdate.cshtml__________________________________________________________________
+
+@model MVCConsignment.ViewModel.VM_Job_Update
+@using MVCConsignment.AlertMessage
+
+@{
+    ViewBag.Title = "Job Order Container Update";
+    Layout = "~/Views/Shared/_MainDashboard.cshtml";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/ResponsiveTable.css" rel="stylesheet" />
+<script src="~/Scripts/Custom/num2Word.js"></script>
+<link href="~/Content/Page.css" rel="stylesheet" />
+<script src="~/Scripts/Custom/custom_Validate.js"></script>
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="row" style="padding-bottom:1px;">
+        @{ Html.RenderPartial("_Alerts");}
+    </div>
+    <div class="row" style="padding-bottom:1px; text-align:center">
+        <div class="alert alert-danger alert-dismissable" id="pageAlert" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b id="alertMessage"></b>
+        </div>
+    </div>
+
+
+    <div class="row" style="padding-bottom:5px;text-align:center">
+        <div id="no-4-tables">
+            <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                <tbody>
+                    <tr>
+                        <td data-title="Job Code">Job Code</td>
+                        <td data-title="Job Code">
+                            @Html.TextBoxFor(model => model.JobCode, new { @class = "form-control", @id = "txtJobCode", autocomplete = "off", @maxlength = "30" })
+                            <div class="speech-bubble">
+                                @Html.ValidationMessageFor(model => model.JobCode, "", new { @id = "ErrortxtJobCode" })
+                            </div>
+                        </td>
+                        <td data-title="Action">Action</td>
+                        <td data-title="Action">
+                            @Html.DropDownListFor(model => model.Action, Model.ActionList, "Select Action", new { @class = "form-control", @id = "ddlActionList" })
+                            <div class="speech-bubble">
+                                @Html.ValidationMessageFor(model => model.Action, "", new { @id = "ErrorddlActionList" })
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div class="row" style="padding-bottom:5px; text-align:center;">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input type="submit" name="Show" class="btn btn-success" value="Show" style="margin-top:10px;margin-left:10px;width:80px;" id="btnSearch" />
+                        @Html.HiddenFor(model => model.btnAction, new { @class = "form-control", @id = "hdnbtnAction" })
+                        @Html.HiddenFor(model => model.JobId, new { @class = "form-control", @id = "hdnJobId" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    if (!string.IsNullOrEmpty( @Model.Action))
+    { 
+    <div id="DivDtls">
+        <div class="row pad" style="margin-left: 0px; margin-right: 0px;">
+            <div class=" form-group">
+                <div class="col-md-12  page-header" style="margin:0px;">
+                    Job Details
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+    if (@Model.Action == "Customer Name")
+    {
+
+        <div id="divCust" style="display:block;">
+            <div id="no-4-tables">
+                <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                    <tbody>
+                        <tr>
+
+                            <td data-title="Customer Name">Customer Name</td>
+                            <td data-title="Customer Name">
+                                @Model.OldCustomerName
+                            </td>
+                            <td data-title="New Customer Name">New Customer Name</td>
+                            <td data-title="New Customer Name">
+                                @Html.DropDownListFor(model => model.CustomerID, Model.Customer_list, "Select Customer Name", new { @class = "form-control", @id = "ddlCustomerName" })
+                                <div class="speech-bubble">
+                                    @Html.ValidationMessageFor(model => model.CustomerID, "", new { @id = "ErrorddlCustomerName" })
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+
+    if (@Model.Action == "Move For")
+    {
+
+        <div id="divMoveFor" style="display:block;">
+            <div id="no-4-tables">
+                <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                    <tbody>
+                        <tr>
+                            <td data-title="Move For">Move For</td>
+                            <td data-title="Move For">
+                                @Model.OldMoveFor
+                            </td>
+                            <td data-title="New Move Type">New Move Type</td>
+                            <td data-title="New Move Type">
+                                @Html.DropDownListFor(model => model.MoveFor, Model.MoveFor_list, "Select Move For", new { @class = "form-control", @id = "ddlMoveFor" })
+                                <div class="speech-bubble">
+                                    @Html.ValidationMessageFor(model => model.MoveFor, "", new { @id = "ErrorddlMoveFor" })
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+
+    if (@Model.Action == "Freight Rate")
+    {
+        <div id="divFreight" style="display:block;">
+            <div id="no-4-tables">
+                <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                    <tbody>
+                        <tr>
+
+                            <td data-title="Freight Rate">Freight Rate</td>
+                            <td data-title="Freight Rate">
+                                @Model.OldFreightRate
+                            </td>
+                            <td data-title="New Freight Rate">New Freight Rate</td>
+                            <td data-title="New Freight Rate">
+                                @Html.TextBoxFor(model => model.FreightID, new { @class = "form-control", @id = "txtFreightRate", autocomplete = "off", @maxlength = "50" })
+                                <div class="speech-bubble">
+                                    @Html.ValidationMessageFor(model => model.FreightID, "", new { @id = "ErrortxtFreightRate" })
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    if (@Model.Action == "Trailer Rent")
+    {
+        <div id="divTrailerRent" style="display:block;">
+            <div id="no-4-tables">
+                <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                    <tbody>
+                        <tr>
+                            <td data-title="Trailer Rent">Trailer Rent</td>
+                            <td data-title="Trailer Rent">
+                                @Model.OldTrailerRent
+                            </td>
+                            <td data-title="New Trailer Rent">New Trailer Rent</td>
+                            <td data-title="New Trailer Rent">
+                                @Html.TextBoxFor(model => model.TrailerID, new { @class = "form-control", @id = "txtTrailerRent", autocomplete = "off", @maxlength = "50" })
+                                <div class="speech-bubble">
+                                    @Html.ValidationMessageFor(model => model.TrailerID, "", new { @id = "ErrortxtTrailerRent" })
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    if (!string.IsNullOrEmpty(@Model.Action))
+    { 
+    <div id="divCust" style="display:block;">
+        <div id="no-4-tables">
+            <table class="col-md-12 table-bordered table-striped table-condensed cf" style="padding:5px;">
+                <tbody>
+                    <tr>
+                        <td data-title="Remark">Remark</td>
+                        <td data-title="Remark">
+                            @Html.TextBoxFor(model => model.Remark, new { @class = "form-control", @id = "txtRemark", autocomplete = "off", @maxlength = "300" })
+                            <div class="speech-bubble">
+                                @Html.ValidationMessageFor(model => model.Remark, "", new { @id = "ErrortxtRemark" })
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div id="div_savebtn" class="row" style="padding-bottom:5px; text-align:center;">
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" name="save" class="btn btn-success" value="Save" style="margin-top:10px;margin-left:10px;width:80px;" id="btnSave" />
+            </div>
+        </div>
+    </div>
+
+}
+}
+
+<script type="text/javascript">
+        $(document).ready(function () {
+
+            // $(".speech-bubble").hide();
+            $("input[type=text]").on('keyup keypress blur change keydown', function (e){
+                Validate();
+            });
+            $("select").on('keyup keypress blur change', function (e) {
+                Validate();
+            });
+            $("input[type=date]").on('keyup keypress blur change keydown', function (e) {
+                Validate();
+            });
+            $("input[type=radio]").on('keyup keypress blur change keydown', function (e) {
+                Validate();
+            });
+
+            function Validate() {
+                $(".speech-bubble").hide();
+                $(".speech-bubble").each(function () {
+                    if ($(this).find('.field-validation-error').text() == "") {
+                        $(this).hide();
+                        return true;
+                    }
+                    else {
+                        $(this).show();
+                        return false;
+                    }
+                });
+            }
+
+
+            $('#btnSearch').click(function () {
+                $('#hdnbtnAction').val("Search");
+            });
+
+
+            $('#btnSave').click(function () {
+                $('#hdnbtnAction').val("Submit");            
+
+            });
+          });
+
+</script>
+
+
+_________________________________________________________ ErrorController.cs________________________________________________________________
+
+using MVCConsignment.App_Code;
+using MVCConsignment.App_Code.FAMS;
+using MVCConsignment.Models;
+using MVCConsignment.UnitOfWorks;
+using MVCConsignment.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
+
+namespace MVCConsignment.Controllers
+{
+    public class ErrorController : BaseController
+    {
+        CALYX_LOGISEntities db = null;
+        IUnitOfWork UOW = null;
+        DAL_ERROR err_DAL = new DAL_ERROR();
+        string LOGIN_BRANCH = "";
+        public ErrorController(DbContext db1, IUnitOfWork iow)
+        {
+            UOW = iow;
+            db = (CALYX_LOGISEntities)db1;
+
+            if (System.Web.HttpContext.Current.Session["UserCredentials"] != null)
+            {
+                SP_LogIn_Result LogIn = (SP_LogIn_Result)System.Web.HttpContext.Current.Session["UserCredentials"];
+                if (LogIn != null)
+                {
+                    LOGIN_BRANCH = LogIn.Branch_Code;
+                }
+            }
+        }
+
+        #region Advance Receipt Tds Update
+
+        public ActionResult ReceiptTdsUpdate()
+        {
+            ViewBag.Header = "Receipt Tds Update";
+            VM_ReceiptTdsUpdate rtu = new VM_ReceiptTdsUpdate();
+            if (TempData["PartyId"] != null)
+            {
+                rtu.PartyId = Convert.ToInt32(TempData["PartyId"]);
+                rtu.ReceiptFor = Convert.ToString(TempData["ReceiptFor"]);
+                rtu.FromDate = Convert.ToDateTime(TempData["FromDate"]);
+                rtu.ToDate = Convert.ToDateTime(TempData["ToDate"]);
+                Receipt_For_Tds_Update(rtu);
+                ModelState.Clear();
+            }
+            return View(rtu);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ReceiptTdsUpdate(VM_ReceiptTdsUpdate rtu)
+        {
+            ViewBag.Header = "Receipt Tds Update";
+
+            if (rtu.Action == "Submit")
+            {
+                decimal result = 0;
+                foreach (var item in rtu.Result)
+                {
+                    if (item.IsChecked)
+                    {
+                        result = err_DAL.UPDATE_RECEIPT_TDS(rtu);
+                    }
+                }
+
+                if (result > 0)
+                {
+                    Success(string.Format("<b>Updation is done successfully.</b>"), true);
+                }
+                else if ((rtu.ErrMsg??"").Trim() != "")
+                {
+                    Danger(string.Format("<b>" + rtu.ErrMsg + "</b>"), true);
+                }
+                else
+                {
+                    Danger(string.Format("<b>Updation is not done.</b>"), true);
+                }
+
+                TempData["PartyId"] = rtu.PartyId;
+                TempData.Keep("PartyId");
+
+                TempData["ReceiptFor"] = rtu.ReceiptFor;
+                TempData.Keep("ReceiptFor");
+
+                TempData["FromDate"] = rtu.FromDate;
+                TempData.Keep("FromDate");
+
+                TempData["ToDate"] = rtu.ToDate;
+                TempData.Keep("ToDate");
+
+                return RedirectToAction("ReceiptTdsUpdate");
+            }
+
+            Receipt_For_Tds_Update(rtu);
+            ModelState.Clear();
+            return View(rtu);
+        }
+
+        private void Receipt_For_Tds_Update(VM_ReceiptTdsUpdate rtu)
+        {
+            DataTable dt = err_DAL.Fill_Receipt_For_Tds_Update(LOGIN_BRANCH, rtu.PartyId, rtu.FromDate.Value.ToString("dd/MM/yyyy"), rtu.ToDate.Value.ToString("dd/MM/yyyy"));
+            List<VM_Receipt_For_Tds_Update> dtl = new List<VM_Receipt_For_Tds_Update>();
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    dtl.Add(new VM_Receipt_For_Tds_Update
+                    {
+                        SrNO = Convert.ToInt32(row["SrNO"] == DBNull.Value ? "0" : row["SrNO"]),
+                        ADV_ID = Convert.ToDecimal(row["ADV_ID"] == DBNull.Value ? "0" : row["ADV_ID"]),
+                        RECEIPT_DATE = Convert.ToString(row["RECEIPT_DATE"] == DBNull.Value ? "" : row["RECEIPT_DATE"]),
+                        PAY_MODE = Convert.ToString(row["PAY_MODE"] == DBNull.Value ? "" : row["PAY_MODE"]),
+                        PAY_DETAILS = Convert.ToString(row["PAY_DETAILS"] == DBNull.Value ? "" : row["PAY_DETAILS"]),
+                        CHQ_RTGS_DD_NO = Convert.ToString(row["CHQ_RTGS_DD_NO"] == DBNull.Value ? "" : row["CHQ_RTGS_DD_NO"]),
+                        CHQ_RTGS_DD_DATE = Convert.ToString(row["CHQ_RTGS_DD_DATE"] == DBNull.Value ? "" : row["CHQ_RTGS_DD_DATE"]),
+                        BANKNAME = Convert.ToString(row["BANKNAME"] == DBNull.Value ? "" : row["BANKNAME"]),
+                        AMOUNT = Convert.ToDecimal(row["AMOUNT"] == DBNull.Value ? "0" : row["AMOUNT"]),
+                        TDS_AMOUNT = Convert.ToDecimal(row["TDS_AMOUNT"] == DBNull.Value ? "0" : row["TDS_AMOUNT"]),
+                        TOTAL_AMOUNT = Convert.ToDecimal(row["TOTAL_AMOUNT"] == DBNull.Value ? "0" : row["TOTAL_AMOUNT"]),
+                        ADV_DTL_ID = Convert.ToDecimal(row["ADV_DTL_ID"] == DBNull.Value ? "0" : row["ADV_DTL_ID"]),
+                    });
+                }
+            }
+            rtu.Result = dtl;
+        }
+
+        #endregion
+
+        #region Job Order Container Update
+
+        public ActionResult JobOrderContainerUpdate()
+        {
+            ViewBag.Header = "Job Order Container Update";
+            VM_JobOrderContainerUpdate jcu = new VM_JobOrderContainerUpdate();
+            if (TempData["Job_Order_No"] != null)
+            {
+                jcu.Search_Job_No = Convert.ToString(TempData["Job_Order_No"]);
+                Jobs_For_Container_Update(jcu);
+                ModelState.Clear();
+            }
+            return View(jcu);
+        }
+
+        private void Jobs_For_Container_Update(VM_JobOrderContainerUpdate jcu)
+        {
+            DataTable dt = err_DAL.SELECT_JOB_ORDER_DETAILS_FOR_CONT_UPDATE(LOGIN_BRANCH,jcu.Search_Job_No);
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    jcu.Job_Id = Convert.ToDecimal(row["JOB_ID"] == DBNull.Value ? "0" : row["JOB_ID"]);
+                    jcu.BookingBranch = Convert.ToString(row["BOOKING_BRANCH"] == DBNull.Value ? "" : row["BOOKING_BRANCH"]);
+                    jcu.Curr_Cont_No = Convert.ToString(row["CONT_NO_1"] == DBNull.Value ? "" : row["CONT_NO_1"]);
+                    jcu.ErrMsg = Convert.ToString(row["ERROR_MSG"] == DBNull.Value ? "" : row["ERROR_MSG"]);
+                    jcu.Job_No = Convert.ToString(row["job_code"] == DBNull.Value ? "" : row["job_code"]);
+                    jcu.Job_Date = Convert.ToString(row["JOB_DATE"] == DBNull.Value ? "" : row["JOB_DATE"]);
+                }
+            }
+
+            if ((jcu.ErrMsg ?? "").Trim() != "")
+            {
+                jcu.Job_Id = 0;
+                Danger(string.Format("<b>" + jcu.ErrMsg + "</b>"), true);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult JobOrderContainerUpdate(VM_JobOrderContainerUpdate jcu)
+        {
+            ViewBag.Header = "Job Order Container Update";
+
+            if (jcu.Action == "Submit")
+            {
+                decimal result = 0;
+
+                result = err_DAL.UPDATE_JOB_ORDER_CONT_NO(jcu);
+
+                if (result > 0)
+                {
+                    Success(string.Format("<b>Updation is done successfully.</b>"), true);
+                }
+                else if ((jcu.ErrMsg ?? "").Trim() != "")
+                {
+                    Danger(string.Format("<b>" + jcu.ErrMsg + "</b>"), true);
+                }
+                else
+                {
+                    Danger(string.Format("<b>Updation is not done.</b>"), true);
+                }
+
+                TempData["Job_Order_No"] = jcu.Search_Job_No;
+                TempData.Keep("Job_Order_No");
+
+                return RedirectToAction("JobOrderContainerUpdate");
+            }
+
+            Jobs_For_Container_Update(jcu);
+            ModelState.Clear();
+            return View(jcu);
+        }
+
+        #endregion
+        
+        #region Bill Transport Charge Update
+        public ActionResult BillTransportChargeUpdate()
+        {
+            ViewBag.Header = "Bill Transport Charge Update";
+            VM_BillTransportChargeUpdate bcu = new VM_BillTransportChargeUpdate();
+            if (TempData["Bill_No"] != null)
+            {
+                bcu.Search_Bill_No = Convert.ToString(TempData["Bill_No"]);
+                Bill_For_Transport_Charge_Update(bcu);
+                ModelState.Clear();
+            }
+            return View(bcu);
+        }
+
+        private void Bill_For_Transport_Charge_Update(VM_BillTransportChargeUpdate bcu)
+        {
+            DataSet ds = err_DAL.SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE(LOGIN_BRANCH, bcu.Search_Bill_No);
+            if (ds.Tables.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    bcu.Bill_Id = Convert.ToDecimal(row["BILL_ID"] == DBNull.Value ? "0" : row["BILL_ID"]);
+                    bcu.LoginBranch = Convert.ToString(row["LOGIN_BRANCH"] == DBNull.Value ? "" : row["LOGIN_BRANCH"]);
+                    bcu.Bill_No = Convert.ToString(row["BILL_NO"] == DBNull.Value ? "" : row["BILL_NO"]);
+                    bcu.Bill_Date = Convert.ToString(row["BILL_DATE"] == DBNull.Value ? "" : row["BILL_DATE"]);
+                    bcu.Prev_AMOUNT = Convert.ToDecimal(row["AMOUNT"] == DBNull.Value ? "0" : row["AMOUNT"]);
+                    bcu.Prev_BILL_AMT = Convert.ToDecimal(row["BILL_AMT"] == DBNull.Value ? "0" : row["BILL_AMT"]);
+                    bcu.Prev_Amt_In_Words = Convert.ToString(row["AMOUNT_INWORDS"] == DBNull.Value ? "" : row["AMOUNT_INWORDS"]);
+                    bcu.ErrMsg = Convert.ToString(row["ERROR_MSG"] == DBNull.Value ? "" : row["ERROR_MSG"]);
+                }
+
+                if (ds.Tables.Count > 1)
+                {
+                    List<VM_Bill_Dtls> dtl = new List<VM_Bill_Dtls>();
+                    int i = 0;
+                    foreach (DataRow row in ds.Tables[1].Rows)
+                    {
+                        dtl.Add(new VM_Bill_Dtls
+                        {
+                            SrNO = ++i,
+                            BILL_ID = Convert.ToDecimal(row["BILL_ID"] == DBNull.Value ? "0" : row["BILL_ID"]),
+                            BILL_Det_ID = Convert.ToDecimal(row["BILL_Det_ID"] == DBNull.Value ? "0" : row["BILL_Det_ID"]),
+                            CN_CODE = Convert.ToString(row["CN_CODE"] == DBNull.Value ? "" : row["CN_CODE"]),
+                            AMOUNT = Convert.ToDecimal(row["AMOUNT"] == DBNull.Value ? "0" : row["AMOUNT"]),
+                            HALT_AMT = Convert.ToDecimal(row["HALT_AMT"] == DBNull.Value ? "0" : row["HALT_AMT"]),
+                            OTHER_AMT = Convert.ToDecimal(row["OTHER_AMT"] == DBNull.Value ? "0" : row["OTHER_AMT"]),
+                            DISCOUNT_AMT = Convert.ToDecimal(row["DISCOUNT_AMT"] == DBNull.Value ? "0" : row["DISCOUNT_AMT"]),
+                            STATISTICAL_CHARGES = Convert.ToDecimal(row["STATISTICAL_CHARGES"] == DBNull.Value ? "0" : row["STATISTICAL_CHARGES"]),
+                            PREV_AMOUNT = Convert.ToDecimal(row["AMOUNT"] == DBNull.Value ? "0" : row["AMOUNT"]),
+                            PREV_HALT_AMT = Convert.ToDecimal(row["HALT_AMT"] == DBNull.Value ? "0" : row["HALT_AMT"]),
+                            PREV_OTHER_AMT = Convert.ToDecimal(row["OTHER_AMT"] == DBNull.Value ? "0" : row["OTHER_AMT"]),
+                            PREV_DISCOUNT_AMT = Convert.ToDecimal(row["DISCOUNT_AMT"] == DBNull.Value ? "0" : row["DISCOUNT_AMT"]),
+                            PREV_STATISTICAL_CHARGES = Convert.ToDecimal(row["STATISTICAL_CHARGES"] == DBNull.Value ? "0" : row["STATISTICAL_CHARGES"]),
+                            TOTAL_AMT = Convert.ToDecimal(row["TOTAL_AMT"] == DBNull.Value ? "0" : row["TOTAL_AMT"]),
+
+                            CN_ID = Convert.ToDecimal(row["CN_ID"] == DBNull.Value ? "0" : row["CN_ID"]),
+                            JOB_ID = Convert.ToDecimal(row["JOB_ID"] == DBNull.Value ? "0" : row["JOB_ID"]),
+                            LP_ID = Convert.ToDecimal(row["LP_ID"] == DBNull.Value ? "0" : row["LP_ID"]),
+                            NO_OF_TRUCK = Convert.ToDecimal(row["NO_OF_TRUCK"] == DBNull.Value ? "0" : row["NO_OF_TRUCK"]),
+
+                            JOB_CODE = Convert.ToString(row["JOB_CODE"] == DBNull.Value ? "" : row["JOB_CODE"]),
+
+                        });
+                    }
+                    bcu.Bill_Dtls_List = dtl;
+                }
+            }
+
+            if ((bcu.ErrMsg ?? "").Trim() != "")
+            {
+                bcu.Bill_Id = 0;
+                Danger(string.Format("<b>" + bcu.ErrMsg + "</b>"), true);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult BillTransportChargeUpdate(VM_BillTransportChargeUpdate bcu)
+        {
+            ViewBag.Header = "Bill Transport Charge Update";
+
+            if (bcu.Action == "Submit")
+            {
+                decimal result = 0;
+
+                if (bcu.Bill_Dtls_List != null)
+                {
+                    int flag = 0;
+                    foreach (var item in bcu.Bill_Dtls_List)
+                    {
+                        if (item.IsChecked)
+                        {
+                            flag = 1;
+                        }
+                    }
+                    if (flag > 0)
+                    {
+                        result = err_DAL.UPDATE_BILL_TRANSPORT_CHARGE(bcu);
+                    }
+                }
+
+                if (result > 0)
+                {
+                    Success(string.Format("<b>Updation is done successfully.</b>"), true);
+                }
+                else if ((bcu.ErrMsg ?? "").Trim() != "")
+                {
+                    Danger(string.Format("<b>" + bcu.ErrMsg + "</b>"), true);
+                }
+                else
+                {
+                    Danger(string.Format("<b>Updation is not done.</b>"), true);
+                }
+
+                TempData["Bill_No"] = bcu.Bill_No;
+                TempData.Keep("Bill_No");
+
+                return RedirectToAction("BillTransportChargeUpdate");
+            }
+
+            Bill_For_Transport_Charge_Update(bcu);
+            ModelState.Clear();
+            return View(bcu);
+        }
+
+        #endregion
+    
+
+
+    // ________________________________________________________________JOB UPDATE___________________________________________________________
+
+
+       #region JobUpdate
+
+        public ActionResult JobUpdate()
+        {
+            ViewBag.Header = "Job Update";
+
+            VM_Job_Update objJobUpdate = new VM_Job_Update();
+            objJobUpdate.Customer_list = new SelectList(db.Tbl_Customer_Mst.OrderBy(x => x.CUST_NAME), "CUST_CODE", "CUST_NAME");
+            return View(objJobUpdate);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [SubmitButtonSelector(Name = "Show")]
+        [ActionName("JobUpdate")]
+        public ActionResult JobUpdate(VM_Job_Update objJobUpdate)
+        {
+            ViewBag.Header = "Job Update";
+
+            objJobUpdate.Customer_list = new SelectList(db.Tbl_Customer_Mst.OrderBy(x => x.CUST_NAME), "CUST_ID", "CUST_NAME");
+
+            DataTable dt = err_DAL.JOB_DETAILS_FOR_UPDATE(objJobUpdate.JobCode, LOGIN_BRANCH, Convert.ToString(HttpContext.Session["EmployeeCode"]));
+
+             if (dt.Rows.Count > 0)
+             {
+                 objJobUpdate.JobId = Convert.ToDecimal(dt.Rows[0]["JOB_ID"]);
+                 objJobUpdate.OldCustomerName = Convert.ToString(dt.Rows[0]["CUST_NAME"]);
+                 objJobUpdate.OldMoveFor = Convert.ToString(dt.Rows[0]["MOVE_FOR"]);
+                 objJobUpdate.OldFreightRate = Convert.ToString(dt.Rows[0]["FREIGHT_RATE"]);
+                 objJobUpdate.OldTrailerRent = Convert.ToString(dt.Rows[0]["TRAILER_RENT"]);                          
+             }
+
+             ModelState.Clear();
+             return View(objJobUpdate);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [SubmitButtonSelector(Name = "save")]
+        [ActionName("JobUpdate")]
+        public ActionResult UPDATE_JOB_ORDER_DETAILS(VM_Job_Update bcu)
+        { 
+            ViewBag.Header = "Job Order Details Update";
+
+            string result = err_DAL.UPDATE_JOB_ORDER_DETAILS(bcu);
+            if (result == "")
+            {
+                Success(string.Format("<b>Updation is done successfully.</b>"), true);
+            }
+            else
+            {
+                Danger(string.Format("<b>Updation is not done.</b>"), true);
+            }
+
+            bcu.Customer_list = new SelectList(db.Tbl_Customer_Mst.OrderBy(x => x.CUST_NAME), "CUST_CODE", "CUST_NAME");
+            bcu.Action = "";
+            
+            ModelState.Clear();
+            return View(bcu);
+         }
+
+         #endregion
+      } 
+      }
+
+
+__________________________________________________________VM_Job_Update.cs__________________________________________________________________
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using MVCConsignment.Models;
+
+namespace MVCConsignment.ViewModel
+{
+    public class VM_Job_Update
+    {
+
+        [Required(ErrorMessage = "Please Fill JobCode .")]
+        public string JobCode { get; set; }
+
+
+        [Required(ErrorMessage = "Select Action")]
+        public string Action { get; set; }
+        public SelectList ActionList { get; set; }
+
+
+        public string OldCustomerName { get; set; }
+
+         
+        [Display(Name = "Select Customer Name")]
+        [Required(ErrorMessage = "Select Move For")]
+        public decimal CustomerID { get; set; }
+
+        
+        public SelectList Customer_list { get; set; }
+
+        public string OldMoveFor { get; set; }
+         
+       [Required(ErrorMessage = "Select Move For")]
+
+        public string MoveFor { get; set; }
+
+        public SelectList MoveFor_list { get; set; }
+
+        public string btnAction { get; set; }
+       
+        public string OldFreightRate { get; set; }
+
+        [Required(ErrorMessage = "Enter Freight Rate")]
+        public string FreightID{ get; set; }
+
+         public string OldTrailerRent{ get; set; }
+
+        [Required(ErrorMessage = "Enter Trailer Rent")]
+         public string TrailerID{ get; set; }
+
+        [Required(ErrorMessage = "Enter Remarks")] 
+        public string Remark { get; set; }
+   
+        public decimal JobId { get; set; } 
+
+        public VM_Job_Update()
+           {
+            ActionList = new SelectList(
+                                      new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Customer Name", Value = "Customer Name"},
+                                            new SelectListItem { Text = "Move For", Value = "Move For"}, 
+                                            new SelectListItem { Text = "Freight Rate", Value = "Freight Rate"}, 
+                                            new SelectListItem { Text = "Trailer Rent", Value = "Trailer Rent"}, 
+                                            new SelectListItem { Text = "Job Cancel", Value = "Job Cancel"},
+                                             
+                                        }, "Value", "Text");
+
+            MoveFor_list = new SelectList(
+                                      new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Calyx", Value = "C"},
+                                            new SelectListItem { Text = "Other", Value = "O"},  
+
+                                        }, "Value", "Text");
+       }
+    }     
+}
+
+
+__________________________________________________________DAL_ERROR.cs______________________________________________________________________
+
+using MVCConsignment.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.Linq;
+using System.Text;
+using System.Web;
+
+namespace MVCConsignment.App_Code.FAMS
+{
+    public class DAL_ERROR
+    {
+        string logisConnStr = ConfigurationManager.ConnectionStrings["CALYX_LOGIS"].ToString();
+
+        SqlTransaction mytrans = null;
+
+        public DAL_ERROR(){}
+
+        #region Advance Receipt Tds Update
+        public DataTable Fill_Receipt_For_Tds_Update(string branch, int partyId, string fromDate, string toDate)
+        {
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            SqlDataAdapter dAd = new SqlDataAdapter("usp_Select_Receipt_For_Tds_Update", conn);
+            dAd.SelectCommand.CommandType = CommandType.StoredProcedure;
+            DataSet dSet = new DataSet();
+            try
+            {
+                dAd.SelectCommand.Parameters.AddWithValue("@LOGIN_BRANCH", branch);
+                dAd.SelectCommand.Parameters.AddWithValue("@PARTY_ID", partyId);
+                dAd.SelectCommand.Parameters.AddWithValue("@FROM_DATE", fromDate);
+                dAd.SelectCommand.Parameters.AddWithValue("@TO_DATE", toDate);
+                dAd.Fill(dSet, "Receipt_For_Tds_Update");
+                return dSet.Tables["Receipt_For_Tds_Update"];
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                dSet.Dispose();
+                dAd.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+        public decimal UPDATE_RECEIPT_TDS(VM_ReceiptTdsUpdate rtu)
+        {
+            decimal RET_ID = 0;
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            conn.Open();
+            mytrans = conn.BeginTransaction();
+            SqlCommand dCmd1 = null;
+            try
+            {
+                dCmd1 = new SqlCommand("[DBO].[USP_UPDATE_ADVANCE_RECEIPT_TDS]", conn);
+                dCmd1.CommandType = CommandType.StoredProcedure;
+                dCmd1.Transaction = mytrans;
+
+                SqlParameter sqlp1 = new SqlParameter();
+                sqlp1 = dCmd1.Parameters.Add("@RET_ID", SqlDbType.Decimal);
+                sqlp1.Direction = ParameterDirection.Output;
+
+                SqlParameter sqlp2 = new SqlParameter();
+                sqlp2 = dCmd1.Parameters.Add("@ERR_MSG", SqlDbType.VarChar,150);
+                sqlp2.Direction = ParameterDirection.Output;
+
+                dCmd1.Parameters.AddWithValue("@ADV_DTL_ID", rtu.ADV_DTL_ID);
+                dCmd1.Parameters.AddWithValue("@ADV_ID", rtu.ADV_ID);
+                dCmd1.Parameters.AddWithValue("@AMOUNT", rtu.Amount);
+                dCmd1.Parameters.AddWithValue("@TDS_AMOUNT", rtu.TdsAmount);
+                dCmd1.Parameters.AddWithValue("@TOTAL_AMOUNT", rtu.TotalAmount);
+                dCmd1.Parameters.AddWithValue("@REMARKS", rtu.Remarks);
+                dCmd1.Parameters.AddWithValue("@ADDED_BY", HttpContext.Current.Session["EmployeeCode"].ToString());
+
+                dCmd1.ExecuteNonQuery();
+
+                RET_ID = (decimal)dCmd1.Parameters["@RET_ID"].Value;
+                rtu.ErrMsg = (string)dCmd1.Parameters["@ERR_MSG"].Value;
+
+                if (RET_ID > 0)
+                {
+                    mytrans.Commit();
+                }
+                else
+                {
+                    mytrans.Rollback();
+                }
+            }
+            catch
+            {
+                mytrans.Rollback();
+                throw;
+            }
+            finally
+            {
+                dCmd1.Dispose();
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+            return RET_ID;
+        }
+        #endregion
+
+        #region Job Order Container Update
+        public DataTable SELECT_JOB_ORDER_DETAILS_FOR_CONT_UPDATE(string branch, string jobCode)
+        {
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            SqlDataAdapter dAd = new SqlDataAdapter("USP_SELECT_JOB_ORDER_DETAILS_FOR_CONT_UPDATE", conn);
+            dAd.SelectCommand.CommandType = CommandType.StoredProcedure;
+            DataSet dSet = new DataSet();
+            try
+            {
+                dAd.SelectCommand.Parameters.AddWithValue("@BRANCH_CODE", branch);
+                dAd.SelectCommand.Parameters.AddWithValue("@JOB_CODE", jobCode);
+                dAd.Fill(dSet, "JOB_ORDER_DETAILS_FOR_CONT_UPDATE");
+                return dSet.Tables["JOB_ORDER_DETAILS_FOR_CONT_UPDATE"];
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                dSet.Dispose();
+                dAd.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+        public decimal UPDATE_JOB_ORDER_CONT_NO(VM_JobOrderContainerUpdate jcu)
+        {
+            decimal RET_ID = 0;
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            conn.Open();
+            mytrans = conn.BeginTransaction();
+            SqlCommand dCmd1 = null;
+            try
+            {
+                dCmd1 = new SqlCommand("[DBO].[USP_UPDATE_JOB_ORDER_CONT_NO]", conn);
+                dCmd1.CommandType = CommandType.StoredProcedure;
+                dCmd1.Transaction = mytrans;
+
+                SqlParameter sqlp1 = new SqlParameter();
+                sqlp1 = dCmd1.Parameters.Add("@RET_ID", SqlDbType.Decimal);
+                sqlp1.Direction = ParameterDirection.Output;
+
+                SqlParameter sqlp2 = new SqlParameter();
+                sqlp2 = dCmd1.Parameters.Add("@ERR_MSG", SqlDbType.VarChar, 150);
+                sqlp2.Direction = ParameterDirection.Output;
+
+                dCmd1.Parameters.AddWithValue("@JOB_ID", jcu.Job_Id);
+                dCmd1.Parameters.AddWithValue("@CONT_NO", jcu.New_Cont_No);
+                dCmd1.Parameters.AddWithValue("@REMARKS", jcu.Remarks);
+                dCmd1.Parameters.AddWithValue("@ADDED_BY", HttpContext.Current.Session["EmployeeCode"].ToString());
+
+                dCmd1.ExecuteNonQuery();
+
+                RET_ID = (decimal)dCmd1.Parameters["@RET_ID"].Value;
+                jcu.ErrMsg = (string)dCmd1.Parameters["@ERR_MSG"].Value;
+
+                if (RET_ID > 0)
+                {
+                    mytrans.Commit();
+                }
+                else
+                {
+                    mytrans.Rollback();
+                }
+            }
+            catch
+            {
+                mytrans.Rollback();
+                throw;
+            }
+            finally
+            {
+                dCmd1.Dispose();
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+            return RET_ID;
+        }
+        #endregion
+
+        #region Bill Transport Charge Update
+        public DataSet SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE(string branch, string billNo)
+        {
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            SqlDataAdapter dAd = new SqlDataAdapter("USP_SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE", conn);
+            dAd.SelectCommand.CommandType = CommandType.StoredProcedure;
+            DataSet dSet = new DataSet();
+            try
+            {
+                dAd.SelectCommand.Parameters.AddWithValue("@BRANCH_CODE", branch);
+                dAd.SelectCommand.Parameters.AddWithValue("@BILL_NO", billNo);
+                dAd.Fill(dSet, "BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE");
+                return dSet;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                dSet.Dispose();
+                dAd.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public decimal UPDATE_BILL_TRANSPORT_CHARGE(VM_BillTransportChargeUpdate bcu)
+        {
+            decimal RET_ID = 0;
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            conn.Open();
+            mytrans = conn.BeginTransaction();
+            SqlCommand dCmd1 = null;
+            try
+            {
+                dCmd1 = new SqlCommand("[dbo].[USP_UPDATE_BILL_TRANSPORT_CHARGE]", conn);
+                dCmd1.CommandType = CommandType.StoredProcedure;
+                dCmd1.Transaction = mytrans;
+
+                SqlParameter sqlp1 = new SqlParameter();
+                sqlp1 = dCmd1.Parameters.Add("@RET_ID", SqlDbType.Decimal);
+                sqlp1.Direction = ParameterDirection.Output;
+
+                SqlParameter sqlp2 = new SqlParameter();
+                sqlp2 = dCmd1.Parameters.Add("@ERR_MSG", SqlDbType.VarChar, 150);
+                sqlp2.Direction = ParameterDirection.Output;
+
+                dCmd1.Parameters.AddWithValue("@BILL_ID", bcu.Bill_Id);
+                dCmd1.Parameters.AddWithValue("@BILL_NO", bcu.Bill_No);
+
+                dCmd1.Parameters.AddWithValue("@AMOUNT", bcu.AMOUNT);
+                dCmd1.Parameters.AddWithValue("@HALT_AMT", (bcu.HALT_AMT == null) ? (object)DBNull.Value : bcu.HALT_AMT);
+                dCmd1.Parameters.AddWithValue("@OTHER_AMT", (bcu.OTHER_AMT == null) ? (object)DBNull.Value : bcu.OTHER_AMT);
+                dCmd1.Parameters.AddWithValue("@DISCOUNT_AMT", (bcu.DISCOUNT_AMT == null) ? (object)DBNull.Value : bcu.DISCOUNT_AMT);
+                dCmd1.Parameters.AddWithValue("@STATISTICAL_CHARGES", (bcu.STATISTICAL_CHARGES == null) ? (object)DBNull.Value : bcu.STATISTICAL_CHARGES);
+                dCmd1.Parameters.AddWithValue("@BILL_AMT", bcu.BILL_AMT);
+
+                dCmd1.Parameters.AddWithValue("@AMOUNT_INWORDS", bcu.Amt_In_Words);
+                dCmd1.Parameters.AddWithValue("@ADDED_BY", HttpContext.Current.Session["EmployeeCode"].ToString());
+
+                dCmd1.ExecuteNonQuery();
+
+                RET_ID = (decimal)dCmd1.Parameters["@RET_ID"].Value;
+                bcu.ErrMsg = (string)dCmd1.Parameters["@ERR_MSG"].Value;
+
+                foreach (VM_Bill_Dtls dtls in bcu.Bill_Dtls_List)
+                {
+                    if (dtls.IsChecked)
+                    {
+                        dCmd1 = new SqlCommand("[dbo].[USP_UPDATE_BILL_TRANSPORT_CHARGE_DTLS]", conn);
+                        dCmd1.CommandType = CommandType.StoredProcedure;
+                        dCmd1.Transaction = mytrans;
+
+                        SqlParameter sqlp3 = new SqlParameter();
+                        sqlp3 = dCmd1.Parameters.Add("@RET_ID", SqlDbType.Decimal);
+                        sqlp3.Direction = ParameterDirection.Output;
+
+                        SqlParameter sqlp4 = new SqlParameter();
+                        sqlp4 = dCmd1.Parameters.Add("@ERR_MSG", SqlDbType.VarChar, 150);
+                        sqlp4.Direction = ParameterDirection.Output;
+
+
+                        dCmd1.Parameters.AddWithValue("@BILL_ID", (dtls.BILL_ID == null) ? (object)DBNull.Value : dtls.BILL_ID);
+                        dCmd1.Parameters.AddWithValue("@BILL_Det_ID", (dtls.BILL_Det_ID == null) ? (object)DBNull.Value : dtls.BILL_Det_ID);
+                        dCmd1.Parameters.AddWithValue("@AMOUNT", (dtls.AMOUNT == null) ? (object)DBNull.Value : dtls.AMOUNT);
+                        dCmd1.Parameters.AddWithValue("@HALT_AMT", (dtls.HALT_AMT == null) ? (object)DBNull.Value : dtls.HALT_AMT);
+                        dCmd1.Parameters.AddWithValue("@OTHER_AMT", (dtls.OTHER_AMT == null) ? (object)DBNull.Value : dtls.OTHER_AMT);
+                        dCmd1.Parameters.AddWithValue("@DISCOUNT_AMT", (dtls.DISCOUNT_AMT == null) ? (object)DBNull.Value : dtls.DISCOUNT_AMT);
+                        dCmd1.Parameters.AddWithValue("@STATISTICAL_CHARGES", (dtls.STATISTICAL_CHARGES == null) ? (object)DBNull.Value : dtls.STATISTICAL_CHARGES);
+                        dCmd1.Parameters.AddWithValue("@TOTAL_AMT", (dtls.TOTAL_AMT == null) ? (object)DBNull.Value : dtls.TOTAL_AMT);
+
+                        dCmd1.Parameters.AddWithValue("@CN_ID", (dtls.CN_ID == null) ? (object)DBNull.Value : dtls.CN_ID);
+                        dCmd1.Parameters.AddWithValue("@JOB_ID", (dtls.JOB_ID == null) ? (object)DBNull.Value : dtls.JOB_ID);
+                        dCmd1.Parameters.AddWithValue("@LP_ID", (dtls.LP_ID == null) ? (object)DBNull.Value : dtls.LP_ID);
+                        dCmd1.Parameters.AddWithValue("@NO_OF_TRUCK", (dtls.NO_OF_TRUCK == null) ? (object)DBNull.Value : dtls.NO_OF_TRUCK);
+                        dCmd1.Parameters.AddWithValue("@AMOUNT_IN_WORDS", (dtls.Amt_In_Words == null) ? (object)DBNull.Value : dtls.Amt_In_Words);
+                        dCmd1.Parameters.AddWithValue("@ADDED_BY", HttpContext.Current.Session["EmployeeCode"].ToString());
+
+                        dCmd1.ExecuteNonQuery();
+
+                        RET_ID = (decimal)dCmd1.Parameters["@RET_ID"].Value;
+                        bcu.ErrMsg = (string)dCmd1.Parameters["@ERR_MSG"].Value;
+
+                        if (RET_ID == -1) break;
+                    }
+                }
+
+                if (RET_ID > 0)
+                {
+                    mytrans.Commit();
+                }
+                else
+                {
+                    mytrans.Rollback();
+                }
+            }
+            catch
+            {
+                mytrans.Rollback();
+                throw;
+            }
+            finally
+            {
+                dCmd1.Dispose();
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+            return RET_ID;
+        }
+
+        #endregion
+
+       
+        
+//________________________________________________________SHOW_____________________________________________________________
+
+
+        #region JOB_DETAILS_FOR_UPDATE
+        public DataTable JOB_DETAILS_FOR_UPDATE(string JOB_CODE, string LOGIN_BRANCH_CODE, string EMPLOYEE_CODE)
+        {
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            SqlDataAdapter dAd = new SqlDataAdapter("[Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE]", conn);
+            dAd.SelectCommand.CommandType = CommandType.StoredProcedure;
+            DataSet dSet = new DataSet();
+            try
+            {
+                dAd.SelectCommand.Parameters.AddWithValue("@JOB_CODE", JOB_CODE);
+                dAd.SelectCommand.Parameters.AddWithValue("@LOGIN_BRANCH_CODE", LOGIN_BRANCH_CODE);
+                dAd.SelectCommand.Parameters.AddWithValue("@EMP_CODE", EMPLOYEE_CODE);
+
+                dAd.Fill(dSet, "Tbl_JobDetails");
+                return dSet.Tables["Tbl_JobDetails"];
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                dSet.Dispose();
+                dAd.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+
+//_____________________________________________________________UPDATE__________________________________________________________
+
+
+        public string UPDATE_JOB_ORDER_DETAILS(VM_Job_Update bcu)
+        {
+            string ErrMsg = "";
+              
+            SqlConnection conn = new SqlConnection(logisConnStr);
+            conn.Open();
+            mytrans = conn.BeginTransaction();
+            SqlCommand dCmd1 = null;
+            try
+            {
+                dCmd1 = new SqlCommand("[Log].[USP_UPDATE_JOB_ORDER_CORRECTION]", conn);
+                dCmd1.CommandType = CommandType.StoredProcedure;
+                dCmd1.Transaction = mytrans;
+                 
+                SqlParameter sqlp2 = new SqlParameter();
+                sqlp2 = dCmd1.Parameters.Add("@ERRORSTR", SqlDbType.VarChar, 200);
+                sqlp2.Direction = ParameterDirection.Output;
+
+                dCmd1.Parameters.AddWithValue("@JOB_ID", bcu.JobId);
+                dCmd1.Parameters.AddWithValue("@ACTION", bcu.Action);
+                dCmd1.Parameters.AddWithValue("@CUST_ID", ( bcu.CustomerID==null)?(object)DBNull.Value:  bcu.CustomerID) ;
+
+                dCmd1.Parameters.AddWithValue("@MOVE_FOR", (bcu.MoveFor == null) ? (object)DBNull.Value : bcu.MoveFor);
+                dCmd1.Parameters.AddWithValue("@FREIGHT_RATE", (bcu.FreightID == null) ? (object)DBNull.Value : bcu.FreightID);
+                dCmd1.Parameters.AddWithValue("@TRAILER_RENT", (bcu.TrailerID == null) ? (object)DBNull.Value : bcu.TrailerID);
+               
+
+                dCmd1.Parameters.AddWithValue("@REMARKS", bcu.Remark);
+                dCmd1.Parameters.AddWithValue("@EMP_CODE", Convert.ToString(HttpContext.Current.Session["EmployeeCode"]));
+                dCmd1.ExecuteNonQuery();
+                ErrMsg = (string)dCmd1.Parameters["@ERRORSTR"].Value;
+
+                if (ErrMsg =="")
+                {
+                    mytrans.Commit();
+                }
+                else
+                {
+                    mytrans.Rollback();
+                }
+            }
+            catch
+            {
+                mytrans.Rollback();
+                throw;
+            }
+            finally
+            {
+                dCmd1.Dispose();
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+                conn.Dispose();
+            }
+            return ErrMsg;
+        }
+
+     #endregion   
+    }
+}
+
+___________________________________________________________DATABASE_______________________________________________________________
+
+
+
+__________________________________________________________USP_UPDATE_JOB_ORDER_CORRECTION______________________________________________
+
+
+USE [CALYX_LOGIS_PROXY]
+GO
+
+/****** Object:  StoredProcedure [Log].[USP_UPDATE_JOB_ORDER_CORRECTION]    Script Date: 2/4/2023 10:40:22 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+/*
+
+CREATE BY :
+CREADE DATE:
+
+[Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE] 'EXP/J/000057/22-23',NULL,'CAL0026'
+
+*/
+ 
+ALTER proc [Log].[USP_UPDATE_JOB_ORDER_CORRECTION]
+ @ERRORSTR			    VARCHAR(200)  OUTPUT, 
+ @JOB_ID				NUMERIC(18,0), 
+ @ACTION				VARCHAR(50),  
+ @CUST_ID				NUMERIC(18,0), 
+ @REMARKS				VARCHAR(255), 
+ @EMP_CODE				VARCHAR(7)=NULL,
+ @MOVE_FOR				VARCHAR(10),
+ @FREIGHT_RATE			NUMERIC(18,2),
+ @TRAILER_RENT			NUMERIC(18,2) 
+AS BEGIN
+SELECT @ERRORSTR =''
+INSERT INTO DBLOG.Tbl_Move_Job_Order
+SELECT *,GETDATE(),@EMP_CODE,@ACTION + ' : ' + @REMARKS FROM log.Tbl_Move_Job_Order WHERE JOB_ID = @JOB_ID
+
+DECLARE @CUST_NAME VARCHAR(250) 
+
+SELECT @CUST_NAME = CUST_NAME FROM log.Tbl_Customer_Mst WHERE CUST_ID = @CUST_ID
+
+IF(@ACTION = 'Customer Name')
+BEGIN
+	UPDATE log.Tbl_Move_Job_Order SET CUST_NAME = @CUST_NAME , CUST_ID = @CUST_ID WHERE  JOB_ID = @JOB_ID
+
+	UPDATE a set POSTING_FOR = @CUST_NAME, POSTING_FOR_CODE = @CUST_ID
+	FROM log.Tbl_QuickLoadPosting AS a INNER JOIN log.Tbl_Move_Job_Order AS b ON a.LP_ID = b.LP_ID 
+	WHERE  JOB_ID = @JOB_ID AND a.NO_OF_TRUCK = 1
+
+END
+
+
+
+
+IF(@ACTION = 'Move For')
+BEGIN
+	UPDATE log.Tbl_Move_Job_Order SET MOVE_FOR = @MOVE_FOR WHERE  JOB_ID = @JOB_ID 
+
+	UPDATE a set MOVEMENT_FOR = @MOVE_FOR 
+	FROM log.Tbl_QuickLoadPosting AS a INNER JOIN log.Tbl_Move_Job_Order AS b ON a.LP_ID = b.LP_ID 
+	WHERE  JOB_ID = @JOB_ID AND a.NO_OF_TRUCK = 1
+END
+ 
+IF(@ACTION = 'Freight Rate')
+BEGIN
+	UPDATE log.Tbl_Move_Job_Order SET FREIGHT_RATE = @FREIGHT_RATE WHERE  JOB_ID = @JOB_ID 
+
+	UPDATE a SET FREIGHT_RATE = @FREIGHT_RATE
+	FROM log.Tbl_QuickLoadPosting AS a INNER JOIN log.Tbl_Move_Job_Order AS b ON a.LP_ID = b.LP_ID 
+	WHERE  JOB_ID = @JOB_ID AND a.NO_OF_TRUCK = 1
+END 
+   
+IF(@ACTION = 'Trailer Rent')
+BEGIN
+	UPDATE [Log].[Tbl_Job_Order_Veh_Placement] SET TRAILER_RENT = @TRAILER_RENT WHERE  JOB_ID = @JOB_ID  
+END 
+
+
+IF @@ERROR <> 0
+	BEGIN
+		SET @ERRORSTR = 'DATABASE ERROR OCCURS  !'
+			
+		RETURN
+	END
+
+   
+
+END
+
+GO
+
+
+____________________________________________________________[USP_SELECT_JOB_DETAILS_FOR_UPDATE]________________________________________________________________
+
+USE [CALYX_LOGIS_PROXY]
+GO
+
+/****** Object:  StoredProcedure [Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE]    Script Date: 2/4/2023 10:31:41 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+/*
+
+CREATE BY :
+CREADE DATE:
+
+[Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE] 'EXP/J/000057/22-23',NULL,'CAL0026'
+
+*/
+
+ 
+CREATE proc [Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE]
+ @JOB_CODE VARCHAR(30),
+ @LOGIN_BRANCH_CODE VARCHAR(10)=NULL ,
+ @EMP_CODE VARCHAR(7)=NULL
+
+as
+
+ 
+
+---ADDED BY  : ASHISH KALSARPE --- DATE : 25/10/2021--
+CREATE TABLE #TEMP_TABLE  ( LOC_ID INT)
+
+;WITH CTE AS (
+			   SELECT  a.Employee_Code, a.Branch_Code FROM hrm.dbo.tbl_EmployeeBranchAccess AS a INNER JOIN hrm.dbo.tbl_Branch_Mst AS b ON a.Branch_Code = b.Branch_Code 
+			   WHERE(a.Employee_Code = @EMP_CODE) AND (a.status = 'Y') AND (b.Status = 'A')AND b.ParentBranch_Code='ONW'	  
+			   UNION  
+			   SELECT b.Employee_Code,b.Branch_Code FROM hrm.dbo.tbl_Branch_Mst AS a INNER JOIN hrm.dbo.tbl_EmployeeCompany_Details AS b ON a.Branch_Code = b.Branch_Code 
+			   WHERE (b.Employee_Code = @EMP_CODE) AND (a.Status = 'A') AND a.ParentBranch_Code='ONW'
+	         )
+	
+INSERT INTO #TEMP_TABLE(LOC_ID)
+SELECT B.LOC_ID FROM CTE AS A
+INNER JOIN dbo.tbl_Location_Mst AS B WITH(NOLOCK)  ON A.Branch_Code=B.LOGIN_BRANCH_CODE
+WHERE B.STATUS='Y' AND (B.LOGIN_BRANCH_CODE=@LOGIN_BRANCH_CODE OR ISNULL( @LOGIN_BRANCH_CODE,'0')='0')
+---- ASHISH END------------------------------------------------------------
+ 
+SELECT a.JOB_ID,a.JOB_CODE,a.LP_ID,a.CUST_ID,a.CUST_NAME, CASE a.MOVE_FOR WHEN 'C' THEN 'Calyx' WHEN 'O' THEN 'Other' ELSE '' END MOVE_FOR  
+,a.FREIGHT_TYPE, a.FREIGHT_RATE , TRAILER_RENT 
+From log.Tbl_Move_Job_Order as a 
+INNER JOIN [Log].[Tbl_QuickLoadPosting] as b on b.lp_id = a.lp_id  AND  b.BOOKING_LOC_ID IN( select LOC_ID from #TEMP_TABLE )
+LEFT OUTER JOIN [Log].[Tbl_Job_Order_Veh_Placement] as c on c.JOB_ID = a.JOB_ID
+LEFT OUTER JOIN  [dbo].[tbl_Location_Mst] as loc on loc.LOC_ID =  b.BOOKING_LOC_ID
+LEFT OUTER JOIN  [HRM].[dbo].[tbl_Branch_Mst] as l on l.Branch_Code = loc.LOGIN_BRANCH_CODE
+WHERE JOB_CODE=@JOB_CODE
+ 
+iF OBJECT_ID('tempdb..#TEMP_TABLE') IS NOT NULL      
+drop table #TEMP_TABLE              
+                          
+GO
+
+___________________________________________________________USP_SELECT_JOB_DETAILS_FOR_UPDATE_________________________________________________________________
+
+USE [CALYX_LOGIS_PROXY]
+GO
+
+/****** Object:  StoredProcedure [Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE]    Script Date: 2/4/2023 11:40:27 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+/*
+
+CREATE BY :
+CREADE DATE:
+
+[Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE] 'EXP/J/000057/22-23',NULL,'CAL0026'
+
+*/
+ 
+CREATE proc [Log].[USP_SELECT_JOB_DETAILS_FOR_UPDATE]
+ @JOB_CODE VARCHAR(30),
+ @LOGIN_BRANCH_CODE VARCHAR(10)=NULL ,
+ @EMP_CODE VARCHAR(7)=NULL
+
+as
+
+---ADDED BY  : ASHISH KALSARPE --- DATE : 25/10/2021--
+CREATE TABLE #TEMP_TABLE  ( LOC_ID INT)
+
+;WITH CTE AS (
+			   SELECT  a.Employee_Code, a.Branch_Code FROM hrm.dbo.tbl_EmployeeBranchAccess AS a INNER JOIN hrm.dbo.tbl_Branch_Mst AS b ON a.Branch_Code = b.Branch_Code 
+			   WHERE(a.Employee_Code = @EMP_CODE) AND (a.status = 'Y') AND (b.Status = 'A')AND b.ParentBranch_Code='ONW'	  
+			   UNION  
+			   SELECT b.Employee_Code,b.Branch_Code FROM hrm.dbo.tbl_Branch_Mst AS a INNER JOIN hrm.dbo.tbl_EmployeeCompany_Details AS b ON a.Branch_Code = b.Branch_Code 
+			   WHERE (b.Employee_Code = @EMP_CODE) AND (a.Status = 'A') AND a.ParentBranch_Code='ONW'
+	         )
+	
+INSERT INTO #TEMP_TABLE(LOC_ID)
+SELECT B.LOC_ID FROM CTE AS A
+INNER JOIN dbo.tbl_Location_Mst AS B WITH(NOLOCK)  ON A.Branch_Code=B.LOGIN_BRANCH_CODE
+WHERE B.STATUS='Y' AND (B.LOGIN_BRANCH_CODE=@LOGIN_BRANCH_CODE OR ISNULL( @LOGIN_BRANCH_CODE,'0')='0')
+---- ASHISH END------------------------------------------------------------
+ 
+SELECT a.JOB_ID,a.JOB_CODE,a.LP_ID,a.CUST_ID,a.CUST_NAME, CASE a.MOVE_FOR WHEN 'C' THEN 'Calyx' WHEN 'O' THEN 'Other' ELSE '' END MOVE_FOR  
+,a.FREIGHT_TYPE, a.FREIGHT_RATE , TRAILER_RENT 
+From log.Tbl_Move_Job_Order as a 
+INNER JOIN [Log].[Tbl_QuickLoadPosting] as b on b.lp_id = a.lp_id  AND  b.BOOKING_LOC_ID IN( select LOC_ID from #TEMP_TABLE )
+LEFT OUTER JOIN [Log].[Tbl_Job_Order_Veh_Placement] as c on c.JOB_ID = a.JOB_ID
+LEFT OUTER JOIN  [dbo].[tbl_Location_Mst] as loc on loc.LOC_ID =  b.BOOKING_LOC_ID
+LEFT OUTER JOIN  [HRM].[dbo].[tbl_Branch_Mst] as l on l.Branch_Code = loc.LOGIN_BRANCH_CODE
+WHERE JOB_CODE=@JOB_CODE
+ 
+iF OBJECT_ID('tempdb..#TEMP_TABLE') IS NOT NULL      
+drop table #TEMP_TABLE              
+                          
+
+GO
+
+
+
+
+
+____________________________________________________________________________________________________________________________
