@@ -1142,3 +1142,87 @@ ________________________________________________________________BillGSTUpdate.cs
         </div>
      
 }
+
+
+
+_____________________________________________________________DATABASE_________________________________________________________________
+
+USE [CALYX_LOGIS_PROXY]
+GO
+
+/****** Object:  StoredProcedure [dbo].[USP_SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE]    Script Date: 2/6/2023 6:20:56 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+/*================================================================================================
+    Created By     : Pramesh Kumar Vishwakarma
+    Created Date   : 12-12-2022
+	[DBO].[USP_SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE] 'BR00000029','IRMH/22-23/00122'
+==================================================================================================*/
+
+CREATE proc [dbo].[USP_SELECT_BILL_DETAILS_FOR_TRANSPORT_CHARGE_UPDATE]
+(
+   @BRANCH_CODE         VARCHAR(10)
+  ,@BILL_NO				VARCHAR(25)
+)
+as
+begin
+	DECLARE  @BOOKING_BRANCH VARCHAR(10),@ERROR_MSG VARCHAR(250)='',@BRANCH_NAME VARCHAR(100)
+	DECLARE @BILL_ID NUMERIC(18,0),@DIS_BILL_NO VARCHAR(25),@BILL_DATE VARCHAR(10),@LOGIN_BRANCH VARCHAR(10)
+   ,@AMOUNT NUMERIC(18,2),@BILL_AMT NUMERIC(18,2),@AMOUNT_INWORDS VARCHAR(200)
+   ,@PARTY_ID NUMERIC(18,0),@CUST_NAME VARCHAR(250),@GSTIN VARCHAR(20),@PARTY_ADDRESS VARCHAR(255)
+  
+	select @BILL_ID=BILL_ID,@DIS_BILL_NO= BILL_NO, @BILL_DATE=CONVERT(VARCHAR(10),BILL_DATE,103),
+	       @BOOKING_BRANCH=BOOKING_BRANCH,@LOGIN_BRANCH=LOGIN_BRANCH,
+		   @AMOUNT= AMOUNT,@BILL_AMT = BILL_AMT ,@AMOUNT_INWORDS = AMOUNT_INWORDS
+		   ,@PARTY_ID = PARTY_ID ,@GSTIN = GSTIN ,@PARTY_ADDRESS = PARTY_ADDRESS
+	from Log.Tbl_BillGeneration_hdr where BILL_NO=@BILL_NO
+	
+	IF ISNULL(@PARTY_ID,0) > 0
+	BEGIN
+		SELECT @CUST_NAME = CUST_NAME FROM log.TBL_CUSTOMER_MST WHERE CUST_ID = @PARTY_ID
+	END
+
+
+
+	IF(ISNULL(@BILL_ID,0)=0)
+	BEGIN
+	 SET @ERROR_MSG='Bill No is not found in the system.'
+	END
+
+	IF(ISNULL(@BILL_ID,0)>0)
+	begin
+	  if(isnull(@LOGIN_BRANCH,'')<>@BRANCH_CODE)
+	  begin
+	   SELECT @BRANCH_NAME= [Branch_Name] FROM [HRM].[dbo].[tbl_Branch_Mst] WHERE  [Branch_Code]=@LOGIN_BRANCH
+	   SET @ERROR_MSG='Bill No is related to the login branch '+@BRANCH_NAME
+	  end
+	end
+
+	SELECT @BILL_ID as BILL_ID,@DIS_BILL_NO as BILL_NO, @BILL_DATE as BILL_DATE,@AMOUNT as AMOUNT,@BILL_AMT as BILL_AMT ,@AMOUNT_INWORDS as AMOUNT_INWORDS
+	,@LOGIN_BRANCH as LOGIN_BRANCH,@ERROR_MSG AS ERROR_MSG ,@CUST_NAME AS CUST_NAME, @GSTIN AS GSTIN, @PARTY_ADDRESS AS PARTY_ADDRESS
+
+	if(isnull(@ERROR_MSG,'')='')
+    begin
+	   SELECT A.BILL_Det_ID,A.BILL_ID,A.CN_CODE,A.AMOUNT,A.HALT_AMT,A.OTHER_TITLE,A.OTHER_AMT,A.DISCOUNT_AMT,A.STATISTICAL_CHARGES,A.TOTAL_AMT
+	   ,B.CN_ID,B.JOB_ID,c.LP_ID,d.NO_OF_TRUCK,c.JOB_CODE
+	   FROM Log.Tbl_BillGeneration_Dtls  as a
+	   inner join Log.Tbl_ConsignmentNote_Mst as b on a.CN_CODE=b.CN_CODE
+	   inner join Log.Tbl_Move_Job_Order as c on c.JOB_ID=b.JOB_ID
+	   inner join Log.Tbl_QuickLoadPosting as d on c.LP_ID=d.LP_ID
+	   where BILL_ID = @BILL_ID
+	end
+
+end
+
+
+GO
+
+
+
+
